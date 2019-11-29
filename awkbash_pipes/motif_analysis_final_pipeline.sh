@@ -79,10 +79,10 @@ if [ -z $PEAK_CALLING_FAILED ]; then
     if [[ ! -d $FIMO_DIR ]];then mkdir -p $FIMO_DIR; fi
     if [[ ! -d $SPAMO_DIR ]];then mkdir -p $SPAMO_DIR; fi
 
-#    ### sorting of the peaks based on signal float value:
-#    cat $IDR_PEAK_FILE | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$5,$7,$10}' | sort -k 5,5gr > $SORTED_FILE
-#    echo -e "\nsorting of IDR peak file completed...\n"   
-#
+    ### sorting of the peaks based on signal float value:
+    cat $IDR_PEAK_FILE | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$5,$7,$10}' | sort -k 5,5gr > $SORTED_FILE
+    echo -e "\nsorting of IDR peak file completed...\n"   
+
     ### fetching the DNA sequences of sorted regions using hg19 male fasta reference seq:
     $BEDTOOLS_PATH/fastaFromBed -fi $GENOME -bed $SORTED_FILE -fo $ORIGINAL_FASTA_FILE
     echo -e "\nFasta extraction of sorted bed regions completed...\n"   
@@ -103,38 +103,38 @@ if [ -z $PEAK_CALLING_FAILED ]; then
     $MEME_SUITE_PATH/fasta-get-markov -m 0 $ORIGINAL_BG_FASTA_FILE $ORIGINAL_BG_ZERO_MARKOV_MODEL_FILE
     echo -e "\nZero order Markov model generation for sorted original background file completed...\n"   
 
-#    ### generating bed file of 500bp regions centered on peak-summits: 
-#    awk 'BEGIN{OFS="\t"} {chromStart=$2; summit=$6; midPos=chromStart+summit; print $1, midPos-250, midPos+250;}' $SORTED_FILE > $CENTERED_FILE
-#    echo -e "\nCentering of IDR peak file 250 upstream and 250 downstream completed...\n"   
-#    
-#    ### Generate 2X null sequences or random sequences with matched GC content, repeat fraction with user input sequence length:
-#    python $NULL_GENERATE_SCRIPT $NULL_PARAMETERS -o $BG_FILE $CENTERED_FILE hg19 $NULL_HG19_INDICES
-#    echo -e  "\nGeneration of randomic genomic regions matching GC% and length completed...\n"   
-#
-#    ### fetching the DNA sequences of peak summit regions using hg19 male fasta reference seq:
-#    $BEDTOOLS_PATH/fastaFromBed -fi $GENOME -bed $CENTERED_FILE -fo $CENTERED_FASTA_FILE
-#    echo -e "\nFasta extraction of summit centered file completed...\n"   
-#
-#    ### fetching the DNA sequences of randomly generated null sequences with matched GC content and repeat fraction using hg19 ref seq:
-#    $BEDTOOLS_PATH/fastaFromBed -fi $GENOME -bed $BG_FILE -fo $BG_FASTA_FILE
-#    echo -e "\nFasta extraction of background file completed...\n"   
-#
-#    ### create fasta markov model as a background file:
-#    $MEME_SUITE_PATH/fasta-get-markov -m 1 $BG_FASTA_FILE $BG_MARKOV_MODEL_FILE
-#    echo -e "\nMarkov model generation for background file completed...\n"   
-#
+    ### generating bed file of 500bp regions centered on peak-summits: 
+    awk 'BEGIN{OFS="\t"} {chromStart=$2; summit=$6; midPos=chromStart+summit; print $1, midPos-250, midPos+250;}' $SORTED_FILE > $CENTERED_FILE
+    echo -e "\nCentering of IDR peak file 250 upstream and 250 downstream completed...\n"   
+    
+    ### Generate 2X null sequences or random sequences with matched GC content, repeat fraction with user input sequence length:
+    python $NULL_GENERATE_SCRIPT $NULL_PARAMETERS -o $BG_FILE $CENTERED_FILE hg19 $NULL_HG19_INDICES
+    echo -e  "\nGeneration of randomic genomic regions matching GC% and length completed...\n"   
+
+    ### fetching the DNA sequences of peak summit regions using hg19 male fasta reference seq:
+    $BEDTOOLS_PATH/fastaFromBed -fi $GENOME -bed $CENTERED_FILE -fo $CENTERED_FASTA_FILE
+    echo -e "\nFasta extraction of summit centered file completed...\n"   
+
+    ### fetching the DNA sequences of randomly generated null sequences with matched GC content and repeat fraction using hg19 ref seq:
+    $BEDTOOLS_PATH/fastaFromBed -fi $GENOME -bed $BG_FILE -fo $BG_FASTA_FILE
+    echo -e "\nFasta extraction of background file completed...\n"   
+
+    ### create fasta markov model as a background file:
+    $MEME_SUITE_PATH/fasta-get-markov -m 1 $BG_FASTA_FILE $BG_MARKOV_MODEL_FILE
+    echo -e "\nMarkov model generation for background file completed...\n"   
+
     ### create zero order fasta markov model as a background file, useful esp. for spamo:
     $MEME_SUITE_PATH/fasta-get-markov -m 0 $BG_FASTA_FILE $BG_ZERO_MARKOV_MODEL_FILE
     echo -e "\nZero order Markov model generation for background file completed...\n"   
-#
-#    ### Run meme-chip with parallel cores and nonrandom features since the input fasta is sorted with decreasing confidence of the peaks or signal float value:
-#    echo -e "\nStarting the meme-chip operation using the centered fasta file and bg markov model file generated in prior steps...\n"
-#
-#    $MEME_SUITE_PATH/meme-chip -oc $MOTIF_OUTPUT -index-name meme_combined.html -db $MOTIF_DB_PATH/JASPAR/JASPAR_CORE_2016_vertebrates.meme -db $MOTIF_DB_PATH/MOUSE/uniprobe_mouse.meme -dna -bfile $BG_MARKOV_MODEL_FILE -norand -nmeme 500 -meme-mod zoops -meme-minw 6 -meme-maxw 30 -meme-nmotifs 5 -meme-maxsize 100000 -dreme-m 5 -centrimo-local -centrimo-score 5 -centrimo-ethresh 10 ${CENTERED_FASTA_FILE}
-#    echo -e "\nMeme-chip analysis completed....\n"
 
-#    $MEME_SUITE_PATH/centrimo --seqlen 500 --verbosity 1 --oc $CENTRIMO_DIR --neg $BG_FASTA_FILE --disc --bfile $BG_MARKOV_MODEL_FILE --local --score 5 --ethresh 10 $CENTERED_FASTA_FILE $MEME_DB_PATH/meme.xml $MOTIF_DB_PATH/JASPAR/JASPAR_CORE_2016_vertebrates.meme $MOTIF_DB_PATH/MOUSE/uniprobe_mouse.meme
-#    echo -e "\nCentrimo analysis completed...\n"
+    ### Run meme-chip with parallel cores and nonrandom features since the input fasta is sorted with decreasing confidence of the peaks or signal float value:
+    echo -e "\nStarting the meme-chip operation using the centered fasta file and bg markov model file generated in prior steps...\n"
+
+    $MEME_SUITE_PATH/meme-chip -oc $MOTIF_OUTPUT -index-name meme_combined.html -db $MOTIF_DB_PATH/JASPAR/JASPAR_CORE_2016_vertebrates.meme -db $MOTIF_DB_PATH/MOUSE/uniprobe_mouse.meme -dna -bfile $BG_MARKOV_MODEL_FILE -norand -nmeme 500 -meme-mod zoops -meme-minw 6 -meme-maxw 30 -meme-nmotifs 5 -meme-maxsize 100000 -dreme-m 5 -centrimo-local -centrimo-score 5 -centrimo-ethresh 10 ${CENTERED_FASTA_FILE}
+    echo -e "\nMeme-chip analysis completed....\n"
+
+    $MEME_SUITE_PATH/centrimo --seqlen 500 --verbosity 1 --oc $CENTRIMO_DIR --neg $BG_FASTA_FILE --disc --bfile $BG_MARKOV_MODEL_FILE --local --score 5 --ethresh 10 $CENTERED_FASTA_FILE $MEME_DB_PATH/meme.xml $MOTIF_DB_PATH/JASPAR/JASPAR_CORE_2016_vertebrates.meme $MOTIF_DB_PATH/MOUSE/uniprobe_mouse.meme
+    echo -e "\nCentrimo analysis completed...\n"
 
     $MEME_SUITE_PATH/tomtom -verbosity 1 -oc $TOMTOM_DIR -png -eps -min-overlap 5 -dist pearson -evalue -thresh 1 -no-ssc -bfile $BG_MARKOV_MODEL_FILE $MEME_DB_PATH/meme.xml $MOTIF_DB_PATH/JASPAR/JASPAR_CORE_2016_vertebrates.meme $MOTIF_DB_PATH/MOUSE/uniprobe_mouse.meme 
     echo -e "\nTOMTOM analysis completed...\n"
