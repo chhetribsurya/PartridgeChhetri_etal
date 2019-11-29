@@ -4,7 +4,8 @@
 
 ##### `Code execution may require installation of following softwares and dependencies:`
 
-```- Python 2.7
+```
+   - Python 2.7
    - Python >= 3.5
    - R >= 3.5
    - Shell Env (unix, bash) 
