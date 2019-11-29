@@ -1,6 +1,6 @@
 # "Occupancy maps of 208 chromatin-associated proteins in one human cell type"
 
-## All the codes used in this project, and study, are segregated into their own language specific platforms : Python, R and Shell (awk,Bash)
+## All the codes used in this project, and study, are segregated into their language specific platforms : Python, R and Shell (awk,Bash)
 
 ##### `Code execution may require installation of following softwares and dependencies:`
 
