@@ -59,7 +59,7 @@
    in future for more extensive analysis purpose, as required.
 ```
 
-`Note : Please cite the orginal software and program if used in the study, for example, SPP, IDR, Bedtools, meme-suite and kmer/gkm-SVM... based papers, to which some of the codes here are adapted from, and some references are here below:`
+`Note : Please cite the orginal softwares and programs if used in the study, for example, SPP, IDR, Bedtools, meme-suite and kmer/gkm-SVM... based papers, to which some of the codes here are adapted from as well. The relevant references are here below:`
 
 
 1. Landt SG, Marinov GK, Kundaje A, et al. ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia. Genome Res. 2012;22(9):1813-1831. doi:10.1101/gr.136184.111
